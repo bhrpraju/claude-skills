@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mastering-markets-analyst — Demo Signal Card (CRAMC)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f4;
+    --bg-tertiary: #efede8;
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border-light: rgba(0,0,0,0.12);
+    --border-medium: rgba(0,0,0,0.22);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1e1e1c;
+      --bg-secondary: #2a2a28;
+      --bg-tertiary: #323230;
+      --text-primary: #f0ede8;
+      --text-secondary: #b4b2a9;
+      --text-tertiary: #888780;
+      --border-light: rgba(255,255,255,0.1);
+      --border-medium: rgba(255,255,255,0.2);
+    }
+  }
+  body {
+    font-family: var(--font);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  .page-header {
+    max-width: 720px;
+    margin: 0 auto 1.5rem;
+  }
+  .page-header h1 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-right: 6px;
+    margin-top: 8px;
+  }
+
+  /* Card root */
+  .card {
+    max-width: 720px;
+    margin: 0 auto;
+    background: var(--bg-primary);
+    border: 0.5px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  /* Banner */
+  .banner {
+    padding: 14px 18px;
+    background: #633806;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .banner-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .pill {
+    font-size: 11px; font-weight: 500;
+    padding: 3px 12px; border-radius: 20px;
+  }
+  .dots { display: flex; gap: 5px; align-items: center; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #faeeda; }
+  .dot.off { opacity: .3; }
+  .banner-right { text-align: right; color: #fff; }
+  .banner-ticker { font-size: 18px; font-weight: 500; }
+  .banner-sub { font-size: 12px; opacity: .8; margin-top: 2px; }
+  .banner-cmp { font-size: 24px; font-weight: 500; margin-top: 2px; }
+
+  /* Health strip */
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    background: var(--bg-secondary);
+    border-top: 0.5px solid var(--border-light);
+  }
+  .strip-col {
+    padding: 12px 16px;
+    border-right: 0.5px solid var(--border-light);
+  }
+  .strip-col:last-child { border-right: none; }
+  .strip-label {
+    font-size: 10px; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px;
+  }
+  .bar-row { display: flex; gap: 3px; margin-bottom: 6px; }
+  .seg { height: 5px; flex: 1; border-radius: 2px; }
+  .seg-empty { background: var(--border-light); }
+  .seg-green { background: #3B6D11; }
+  .seg-amber { background: #854F0B; }
+  .seg-red { background: #A32D2D; }
+  .strip-phrase { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .strip-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; line-height: 1.35; }
+
+  /* Section */
+  .sec { padding: 14px 18px; border-top: 0.5px solid var(--border-light); }
+  .sec-label {
+    font-size: 10px; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: .6px;
+    margin-bottom: 10px; font-weight: 500;
+  }
+
+  /* Price ladder */
+  .ladder { display: flex; border-radius: 6px; overflow: hidden; height: 32px; }
+  .ladder-seg {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500;
+  }
+  .ls-sl { background: #F09595; color: #791F1F; width: 22%; }
+  .ls-entry { background: #FAC775; color: #633806; width: 30%; gap: 4px; }
+  .ls-t1 { background: #C0DD97; color: #3B6D11; width: 24%; }
+  .ls-t2 { background: #97C459; color: #27500A; width: 24%; }
+  .entry-dot { width: 7px; height: 7px; border-radius: 50%; background: #633806; }
+  .ladder-labels {
+    display: flex; justify-content: space-between;
+    margin-top: 5px; font-size: 11px; color: var(--text-secondary);
+  }
+  .rr-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--text-secondary); margin-top: 10px;
+  }
+  .rr-row strong { color: var(--text-primary); }
+  .rr-track {
+    background: var(--bg-secondary); border-radius: 4px; height: 8px;
+    overflow: hidden; margin: 6px 0;
+  }
+  .rr-fill { height: 100%; border-radius: 4px; background: #1D9E75; }
+  .pill-sm {
+    font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: 10px;
+  }
+
+  /* TA Gauges */
+  .ta-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+  .ta-tile {
+    background: var(--bg-secondary); border-radius: var(--radius-md);
+    padding: 10px; text-align: center;
+  }
+  .ta-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+  .ema-pills { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+  .ema-pill { font-size: 10px; padding: 2px 6px; border-radius: 10px; text-align: center; }
+  .sprt-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: var(--text-secondary); flex-wrap: wrap; gap: 6px; }
+
+  /* FA Scorecard */
+  .fa-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
+  .fa-tile { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; }
+  .fa-name { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  .fa-val { font-size: 18px; font-weight: 500; color: var(--text-primary); }
+  .fa-row { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .fa-hint { font-size: 10px; color: var(--text-tertiary); margin-top: 3px; line-height: 1.3; }
+  .arrow-up { color: #3b6d11; font-size: 13px; font-weight: 500; }
+  .arrow-dn { color: #a32d2d; font-size: 13px; font-weight: 500; }
+  .arrow-fl { color: #854f0b; font-size: 13px; font-weight: 500; }
+  .moat-row { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* Valuation */
+  .val-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+  .val-tile { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; }
+  .val-big { font-size: 16px; font-weight: 500; color: var(--text-primary); margin: 4px 0; }
+  .pe-track { background: var(--border-light); border-radius: 4px; height: 6px; position: relative; margin: 8px 0; }
+  .pe-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; border-radius: 50%; }
+  .pe-avg { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 2px; height: 14px; border-radius: 1px; background: #633806; }
+  .sc-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+  .sc-lbl { font-size: 10px; color: var(--text-secondary); width: 28px; }
+  .sc-track { flex: 1; background: var(--border-light); border-radius: 3px; height: 7px; overflow: hidden; }
+  .sc-fill { height: 100%; border-radius: 3px; }
+  .sc-val { font-size: 10px; color: var(--text-secondary); width: 34px; text-align: right; }
+
+  /* Logic / Risks */
+  .logic-list, .risk-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .logic-list li, .risk-list li {
+    display: flex; gap: 8px; font-size: 13px;
+    line-height: 1.55; align-items: flex-start; color: var(--text-primary);
+  }
+  .risk-list li { padding-left: 10px; border-left: 2px solid #F09595; }
+  .ico { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Buttons */
+  .btn-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding: 12px 18px; border-top: 0.5px solid var(--border-light);
+  }
+  .crd-btn {
+    font-size: 12px; padding: 7px 14px;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-medium);
+    background: transparent; cursor: pointer;
+    color: var(--text-primary); font-family: var(--font);
+  }
+  .crd-btn:hover { background: var(--bg-secondary); }
+
+  /* Footer */
+  .footer {
+    padding: 10px 18px;
+    background: var(--bg-secondary);
+    border-top: 0.5px solid var(--border-light);
+    font-size: 11px; color: var(--text-tertiary); line-height: 1.6;
+  }
+
+  /* Repo notice */
+  .repo-notice {
+    max-width: 720px; margin: 1.5rem auto 0;
+    font-size: 12px; color: var(--text-tertiary); text-align: center; line-height: 1.7;
+  }
+  .repo-notice a { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>mastering-markets-analyst — demo output</h1>
+  <p>This is a static sample of the signal card generated by Claude when the skill is loaded. Live outputs include real-time data fetched by Claude's web search.</p>
+  <span class="badge" style="background:#faeeda;color:#633806">HOLD signal</span>
+  <span class="badge" style="background:#E6F1FB;color:#0C447C">CRAMC · Canara Robeco AMC</span>
+  <span class="badge" style="background:#eaf3de;color:#27500a">v1.1 — dual-audience</span>
+</div>
+
+<div class="card">
+
+  <!-- 1. Signal Banner -->
+  <div class="banner">
+    <div class="banner-left">
+      <span class="pill" style="background:#faeeda;color:#633806">HOLD</span>
+      <div class="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot off"></div>
+        <div class="dot off"></div>
+      </div>
+      <span class="pill" style="background:#faeeda;color:#633806">Positional · 3–6 months</span>
+    </div>
+    <div class="banner-right">
+      <div class="banner-ticker">CRAMC</div>
+      <div class="banner-sub">Canara Robeco AMC · Asset Management</div>
+      <div class="banner-cmp">₹268</div>
+    </div>
+  </div>
+
+  <!-- 2. Plain-English Health Strip (Rule 11) -->
+  <div class="strip">
+    <div class="strip-col">
+      <div class="strip-label">Business quality</div>
+      <div class="bar-row">
+        <div class="seg seg-green"></div>
+        <div class="seg seg-green"></div>
+        <div class="seg seg-green"></div>
+        <div class="seg seg-green"></div>
+        <div class="seg seg-empty"></div>
+      </div>
+      <div class="strip-phrase">Excellent money-maker</div>
+      <div class="strip-sub">30% return on owners' money, zero debt, 48% profit margin</div>
+    </div>
+    <div class="strip-col">
+      <div class="strip-label">Growth momentum</div>
+      <div class="bar-row">
+        <div class="seg seg-amber"></div>
+        <div class="seg seg-amber"></div>
+        <div class="seg seg-amber"></div>
+        <div class="seg seg-empty"></div>
+        <div class="seg seg-empty"></div>
+      </div>
+      <div class="strip-phrase">Steady, not exciting</div>
+      <div class="strip-sub">Revenue +17% but profit grew only +7% this year</div>
+    </div>
+    <div class="strip-col">
+      <div class="strip-label">Risk level</div>
+      <div class="bar-row">
+        <div class="seg seg-amber"></div>
+        <div class="seg seg-amber"></div>
+        <div class="seg seg-empty"></div>
+        <div class="seg seg-empty"></div>
+        <div class="seg seg-empty"></div>
+      </div>
+      <div class="strip-phrase">Some concerns</div>
+      <div class="strip-sub">Losing customers to bigger rivals; recently listed stock</div>
+    </div>
+  </div>
+
+  <!-- 3. Price Ladder -->
+  <div class="sec">
+    <div class="sec-label">Price ladder</div>
+    <div class="ladder">
+      <div class="ladder-seg ls-sl">SL ₹230</div>
+      <div class="ladder-seg ls-entry"><div class="entry-dot"></div>Entry ₹255–275</div>
+      <div class="ladder-seg ls-t1">T1 ₹320</div>
+      <div class="ladder-seg ls-t2">T2 ₹354</div>
+    </div>
+    <div class="ladder-labels">
+      <span>Stop –14%</span><span>Entry zone (CMP ₹268)</span><span>T1 +19%</span><span>T2 +32%</span>
+    </div>
+    <div class="rr-row">
+      <strong>R:R ratio</strong>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:14px;font-weight:500;color:var(--text-primary)">1 : 2.1</span>
+        <span class="pill-sm" style="background:#eaf3de;color:#27500a">PASS</span>
+      </div>
+    </div>
+    <div class="rr-track"><div class="rr-fill" style="width:62%"></div></div>
+    <div class="rr-row"><span>Downside ₹38</span><span>Upside ₹79 (to T2)</span></div>
+  </div>
+
+  <!-- 4. Technical Gauges -->
+  <div class="sec">
+    <div class="sec-label">Technical gauges</div>
+    <div class="ta-grid">
+      <div class="ta-tile">
+        <div class="ta-label">Trend</div>
+        <div style="font-size:26px;color:#854F0B;text-align:center">▶</div>
+        <div style="font-size:11px;color:#854F0B;margin-top:2px">Sideways</div>
+      </div>
+      <div class="ta-tile">
+        <div class="ta-label">RSI (14)</div>
+        <svg viewBox="0 0 56 28" style="width:56px;height:28px;display:block;margin:0 auto 2px">
+          <path d="M4,28 A24,24 0 0,1 52,28" fill="none" stroke="#e5e5e5" stroke-width="5" stroke-linecap="round"/>
+          <path d="M4,28 A24,24 0 0,1 52,28" fill="none" stroke="#EF9F27" stroke-width="5" stroke-linecap="round" stroke-dasharray="75.4" stroke-dashoffset="37.7"/>
+          <text x="28" y="27" text-anchor="middle" font-size="11" font-weight="500" fill="#854F0B">48</text>
+        </svg>
+        <div style="font-size:11px;color:#854F0B">Neutral</div>
+      </div>
+      <div class="ta-tile">
+        <div class="ta-label">MACD</div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:28px;justify-content:center;margin-bottom:4px">
+          <div style="width:6px;height:16px;border-radius:2px 2px 0 0;background:#97C459"></div>
+          <div style="width:6px;height:12px;border-radius:2px 2px 0 0;background:#97C459"></div>
+          <div style="width:6px;height:8px;border-radius:2px 2px 0 0;background:#F09595"></div>
+          <div style="width:6px;height:6px;border-radius:2px 2px 0 0;background:#F09595"></div>
+          <div style="width:6px;height:10px;border-radius:2px 2px 0 0;background:#F09595"></div>
+        </div>
+        <div style="font-size:11px;color:#A32D2D">Slightly bearish</div>
+      </div>
+      <div class="ta-tile">
+        <div class="ta-label">EMA stack</div>
+        <div class="ema-pills">
+          <div class="ema-pill" style="background:#eaf3de;color:#27500a">P &gt; 20 EMA ✓</div>
+          <div class="ema-pill" style="background:#fcebeb;color:#791f1f">P &lt; 50 EMA ✗</div>
+          <div class="ema-pill" style="background:#fcebeb;color:#791f1f">P &lt; 200 EMA ✗</div>
+        </div>
+      </div>
+    </div>
+    <div class="sprt-row">
+      <span>Support ₹214 (52W low)</span>
+      <span>Resistance ₹354 (52W high)</span>
+      <span style="color:#854F0B">Pattern: Range compression</span>
+    </div>
+  </div>
+
+  <!-- 5. Fundamental Scorecard -->
+  <div class="sec">
+    <div class="sec-label">Fundamental scorecard — asset management</div>
+    <div class="fa-grid">
+      <div class="fa-tile">
+        <div class="fa-name">Revenue growth</div>
+        <div class="fa-val">+17%</div>
+        <div class="fa-row">
+          <span class="arrow-up">▲</span>
+          <span class="pill-sm" style="background:#eaf3de;color:#27500a">Healthy</span>
+        </div>
+        <div class="fa-hint">FY26 ₹425 Cr revenue</div>
+      </div>
+      <div class="fa-tile">
+        <div class="fa-name">PAT margin</div>
+        <div class="fa-val">48%</div>
+        <div class="fa-row">
+          <span class="arrow-up">▲</span>
+          <span class="pill-sm" style="background:#eaf3de;color:#27500a">Strong</span>
+        </div>
+        <div class="fa-hint">FY26 PAT ₹204 Cr</div>
+      </div>
+      <div class="fa-tile">
+        <div class="fa-name">ROE</div>
+        <div class="fa-val">30.3%</div>
+        <div class="fa-row">
+          <span class="arrow-up">▲</span>
+          <span class="pill-sm" style="background:#eaf3de;color:#27500a">Excellent</span>
+        </div>
+        <div class="fa-hint" style="color:#888780;font-style:normal">How much profit per ₹100 of owners' money</div>
+      </div>
+      <div class="fa-tile">
+        <div class="fa-name">ROCE</div>
+        <div class="fa-val">40.1%</div>
+        <div class="fa-row">
+          <span class="arrow-up">▲</span>
+          <span class="pill-sm" style="background:#eaf3de;color:#27500a">Excellent</span>
+        </div>
+        <div class="fa-hint" style="color:#888780">How hard is the whole business working</div>
+      </div>
+      <div class="fa-tile">
+        <div class="fa-name">Total AUM</div>
+        <div class="fa-val">₹1.07L Cr</div>
+        <div class="fa-row">
+          <span class="arrow-up">▲</span>
+          <span class="pill-sm" style="background:#faeeda;color:#633806">+3% YoY</span>
+        </div>
+        <div class="fa-hint">QAAUM ₹1.17L Cr</div>
+      </div>
+      <div class="fa-tile">
+        <div class="fa-name">Promoter holding</div>
+        <div class="fa-val">75%</div>
+        <div class="fa-row">
+          <span class="arrow-fl">▬</span>
+          <span class="pill-sm" style="background:#eaf3de;color:#27500a">Stable</span>
+        </div>
+        <div class="fa-hint">Canara Bank 51% + ORIX 49% JV</div>
+      </div>
+    </div>
+    <div class="moat-row">
+      <span class="pill-sm" style="background:#E6F1FB;color:#0C447C">Moat: brand + distribution network</span>
+      <span class="pill-sm" style="background:#E6F1FB;color:#0C447C">2nd oldest AMC in India</span>
+      <span class="pill-sm" style="background:#faeeda;color:#633806">Net flow mkt share ↓ 1.3%</span>
+    </div>
+  </div>
+
+  <!-- 6. Valuation Panel -->
+  <div class="sec">
+    <div class="sec-label">Valuation panel</div>
+    <div class="val-grid">
+      <div class="val-tile">
+        <div style="font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px">Fair value range</div>
+        <div class="val-big">₹300–₹340</div>
+        <span class="pill-sm" style="background:#faeeda;color:#633806">Fairly valued</span>
+        <div style="font-size:10px;color:var(--text-tertiary);margin-top:5px">CMP ₹268 → 12–27% upside to fair</div>
+      </div>
+      <div class="val-tile">
+        <div style="font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px">PE vs history</div>
+        <div class="val-big">26.2x</div>
+        <div style="font-size:10px;color:var(--text-tertiary)">Current PE</div>
+        <div class="pe-track">
+          <div class="pe-avg" style="left:60%"></div>
+          <div class="pe-dot" style="left:48%;background:#633806"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-tertiary)">
+          <span>20x</span><span>IPO avg 26x</span><span>35x</span>
+        </div>
+      </div>
+      <div class="val-tile">
+        <div style="font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px">Scenarios (12m)</div>
+        <div style="margin-top:6px">
+          <div class="sc-row"><span class="sc-lbl">Bull</span><div class="sc-track"><div class="sc-fill" style="width:90%;background:#97C459"></div></div><span class="sc-val">₹354</span></div>
+          <div class="sc-row"><span class="sc-lbl">Base</span><div class="sc-track"><div class="sc-fill" style="width:65%;background:#EF9F27"></div></div><span class="sc-val">₹320</span></div>
+          <div class="sc-row"><span class="sc-lbl">Bear</span><div class="sc-track"><div class="sc-fill" style="width:30%;background:#F09595"></div></div><span class="sc-val">₹230</span></div>
+        </div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:6px">Expected value ₹309 · Upside 15%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Signal Logic -->
+  <div class="sec">
+    <div class="sec-label">Signal logic</div>
+    <ul class="logic-list">
+      <li><span class="ico" style="color:#3b6d11">▲</span><span>ROE 30%, ROCE 40%, near-zero debt, PAT CAGR 41% over 5 years — capital efficiency well above sector median and supports a premium multiple vs peers.</span></li>
+      <li><span class="ico" style="color:#3b6d11">▲</span><span>India's MF industry AUM growing at 18% CAGR; CRAMC's SIP book at ₹747 Cr/month with 2.37M accounts is a recurring, sticky revenue engine that compounds regardless of market direction.</span></li>
+      <li><span class="ico" style="color:#3b6d11">▲</span><span>FY26 revenue +17% YoY (₹425 Cr), PAT +7%, QAAUM +14%, equity QAAUM crossing ₹1.07L Cr, digital engagement up 137% year-over-year — business metrics moving in the right direction.</span></li>
+    </ul>
+  </div>
+
+  <!-- 8. Risks -->
+  <div class="sec">
+    <div class="sec-label">Risk / invalidation</div>
+    <ul class="risk-list">
+      <li><span class="ico" style="color:#a32d2d">▼</span><span>Market share erosion is the core structural bear case — equity net flow share declining to 1.3% in H1FY26. Revenue yield of 34.4 bps is lowest among all listed AMC peers (HDFC 47 bps, Nippon 38 bps). Without performance recovery in 3-year rolling returns, AUM growth will lag peers permanently.</span></li>
+      <li><span class="ico" style="color:#a32d2d">▼</span><span>Stock is below both 50 EMA and 200 EMA — long-term trend unconfirmed. Down 24% from IPO highs of ₹354. OFS-nature of IPO means all proceeds went to promoters; large holders may continue selling into any rally above ₹300.</span></li>
+    </ul>
+  </div>
+
+  <!-- 9. Action Buttons -->
+  <div class="btn-row">
+    <button class="crd-btn">Deep dive FA ↗</button>
+    <button class="crd-btn">Compare peers ↗</button>
+    <button class="crd-btn">Run valuation ↗</button>
+  </div>
+
+  <!-- 10. Disclaimer Footer -->
+  <div class="footer">
+    This analysis is for educational and informational purposes only. It does not constitute investment advice, a recommendation to buy or sell, or an offer of any securities. Past performance is not indicative of future results. Stock markets involve risk — you may lose part or all of your capital. Always conduct your own due diligence and consult a SEBI-registered investment advisor before making any investment decisions.
+  </div>
+
+</div>
+
+<div class="repo-notice">
+  <strong>mastering-markets-analyst</strong> skill · part of
+  <a href="https://github.com/bhrpraju/claude-skills">bhrpraju/claude-skills</a> ·
+  built by <a href="https://github.com/bhrpraju">@bhrpraju</a><br>
+  Live outputs in Claude include real-time data · this file is a static demo
+</div>
+
+</body>
+</html>
