@@ -16,34 +16,17 @@ More skills coming — email automation, PowerPoint generation, CIR pipeline coa
 
 ---
 
-## Structure
-
-```
-claude-skills/
-│
-├── README.md                           ← this file — index of all skills
-│
-├── mastering-markets-analyst/
-│   ├── SKILL.md                        ← Claude reads this
-│   ├── README.md                       ← human docs
-│   └── demo.html                       ← standalone visual preview
-│
-├── professional-email/                 ← coming soon
-└── awesome-pptx/                       ← coming soon
-```
-
----
-
 ## What is a Claude skill?
 
 A skill is a `.md` file that loads into Claude's context window and gives it a locked, repeatable behaviour — specific output formats, visual rules, analysis frameworks, and language style — for a particular domain.
+
+Think of it as a **system prompt + instruction set + design spec** in one file.
 
 ---
 
 ## Author
 
-**Rajendra** · AVP Technology Program Management · Sutherland Global Services
-GitHub: [@bhrpraju](https://github.com/bhrpraju)
+Rajendra Prasad Raju. Bh
 
 ---
 
