@@ -2,6 +2,8 @@
 
 > Universal prompt engineering skill for Claude — synthesizes best practices from Claude, GPT-4.1/5.5, Gemini 3, and Grok into one framework.
 
+**v1.1** — Added LinkedIn auto-template enforcement and code block output rule for all copy-paste content.
+
 ---
 
 ## What it does
@@ -10,6 +12,15 @@ This skill has two jobs:
 
 1. **Auto-reconstructs vague prompts** — when your input is missing key components, the skill internally builds a better prompt, states its assumptions, and delivers the output. You get results AND you learn.
 2. **Teaches structured prompting** — the REACT framework, 10 cross-model techniques, 5 domain templates, and an anti-pattern checklist.
+
+---
+
+## Critical Output Rules (v1.1)
+
+- LinkedIn posts → always in a code block
+- Emails → always in a code block
+- Engineered prompts → always in a code block
+- LinkedIn requests → always run through the Content/LinkedIn template first, even if the prompt seems clear
 
 ---
 
@@ -24,6 +35,18 @@ Every high-quality prompt needs all 5 of these:
 | **A**udience | Who will read/use the output |
 | **C**ontext | Background, constraints, data |
 | **T**ask | The actual ask |
+
+---
+
+## Domain Auto-Triggers
+
+| Request type | Template applied automatically |
+|---|---|
+| "write a LinkedIn post" | Content/LinkedIn template |
+| "write an email" | Business/Program Management template |
+| "analyze this stock" | Analysis/Research template |
+| "write code / fix script" | Technical/Coding template |
+| "write a drill / session plan" | Cricket Coaching template |
 
 ---
 
@@ -44,39 +67,17 @@ Every high-quality prompt needs all 5 of these:
 
 ---
 
-## Domain Templates Included
-
-- Business / Program Management
-- Technical / Automation / Coding
-- Content / LinkedIn / Communication
-- Analysis / Research / Stock
-- Cricket Coaching / Fitness
-
----
-
-## Trigger Phrases
-
-This skill fires automatically when you say:
-- "help me write a prompt"
-- "improve this prompt"
-- "I'm not getting good results"
-- "make this better"
-- "how do I ask Claude / ChatGPT / Gemini to..."
-- Any vague request missing Role, Goal, Audience, Context, or Format
-
----
-
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.1 | Apr 2026 | LinkedIn auto-template enforcement; code block rule for all copy-paste output; domain auto-triggers added |
 | v1.0 | Apr 2026 | Initial release — REACT framework, 10 techniques, 5 domain templates |
 
 ---
 
 ## Sources
 
-Synthesized from official documentation of:
 - [Google Gemini API Prompting Strategies](https://ai.google.dev/gemini-api/docs/prompting-strategies)
 - [Phil Schmid's Gemini 3 Best Practices](https://www.philschmid.de/gemini-3-prompt-practices)
 - [Anthropic Claude Prompt Engineering Overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)
