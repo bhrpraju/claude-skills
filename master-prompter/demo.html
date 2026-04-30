@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Prompter — Demo</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --border: #2a2d3a;
+    --accent: #7c3aed;
+    --accent2: #06b6d4;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --font: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); padding: 2rem; min-height: 100vh; }
+  h1 { font-size: 1.6rem; font-weight: 700; color: white; margin-bottom: 0.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .card h2 { font-size: 1rem; font-weight: 600; color: var(--accent2); margin-bottom: 1rem; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.8rem; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 0.72rem; font-weight: 600; }
+  .badge-before { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-after { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .prompt-box { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; font-family: 'Courier New', monospace; font-size: 0.82rem; line-height: 1.6; color: #e2e8f0; margin-top: 0.6rem; white-space: pre-wrap; }
+  .prompt-box.before { border-left: 3px solid var(--red); }
+  .prompt-box.after { border-left: 3px solid var(--green); }
+  .arrow { text-align: center; font-size: 1.5rem; margin: 0.5rem 0; color: var(--muted); }
+  .react-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.8rem; margin-top: 0.8rem; }
+  .react-item { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem; }
+  .react-item .letter { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+  .react-item .label { font-size: 0.78rem; font-weight: 600; color: white; margin: 0.2rem 0; }
+  .react-item .desc { font-size: 0.72rem; color: var(--muted); line-height: 1.4; }
+  .react-item.filled { border-color: var(--green); }
+  .react-item.missing { border-color: var(--red); opacity: 0.7; }
+  .techniques { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem; margin-top: 0.8rem; }
+  .tech-item { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem; }
+  .tech-num { font-size: 0.7rem; color: var(--accent); font-weight: 700; }
+  .tech-name { font-size: 0.82rem; font-weight: 600; color: white; margin: 0.1rem 0; }
+  .tech-desc { font-size: 0.72rem; color: var(--muted); }
+  .model-table { width: 100%; border-collapse: collapse; margin-top: 0.8rem; font-size: 0.82rem; }
+  .model-table th { text-align: left; padding: 0.5rem 0.8rem; background: #0d1117; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .model-table td { padding: 0.6rem 0.8rem; border-top: 1px solid var(--border); }
+  .model-name { font-weight: 700; color: var(--accent2); }
+  .anti-list { margin-top: 0.8rem; }
+  .anti-item { display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+  .anti-item:last-child { border-bottom: none; }
+  .anti-x { color: var(--red); font-weight: 700; flex-shrink: 0; }
+  .footer { text-align: center; color: var(--muted); font-size: 0.75rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .tag { display: inline-block; background: rgba(124,58,237,0.15); color: var(--accent); border: 1px solid rgba(124,58,237,0.3); border-radius: 4px; padding: 1px 7px; font-size: 0.72rem; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<h1>🧠 Master Prompter</h1>
+<p class="subtitle">Universal prompt engineering skill — Claude · GPT-4.1/5.5 · Gemini 3 · Grok</p>
+
+<!-- BEFORE / AFTER DEMO -->
+<div class="card">
+  <h2>⚡ Vague Prompt → Engineered Prompt</h2>
+  <span class="badge badge-before">BEFORE — Vague</span>
+  <div class="prompt-box before">write me a linkedin post about AI</div>
+  <div class="arrow">↓ Master Prompter reconstructs →</div>
+  <span class="badge badge-after">AFTER — Engineered</span>
+  <div class="prompt-box after">You are writing for a senior IT leader with 30+ years of experience,
+building their personal brand on LinkedIn.
+
+Audience: IT professionals, CXOs, program managers
+Tone: Direct, no hype, experience-backed
+Format: Hook (1 line) → 3-4 short paragraphs → CTA (1 line)
+Length: Max 180 words
+
+Topic: How AI automation is changing program management workflows —
+with a specific real-world example, not generic observations.
+
+Do NOT use: "In today's fast-paced world", "leverage", "game-changer",
+hashtag spam, or generic motivational conclusions.</div>
+</div>
+
+<!-- REACT FRAMEWORK -->
+<div class="card">
+  <h2>📐 The REACT Framework</h2>
+  <p style="font-size:0.82rem; color:var(--muted); margin-bottom:0.5rem;">Every high-quality prompt needs all 5 components. Missing 2+ triggers auto-reconstruction.</p>
+  <div class="react-grid">
+    <div class="react-item filled">
+      <div class="letter">R</div>
+      <div class="label">Role</div>
+      <div class="desc">Who the AI is — persona, expertise, domain</div>
+    </div>
+    <div class="react-item filled">
+      <div class="letter">E</div>
+      <div class="label">Expected Output</div>
+      <div class="desc">Format, length, structure of the response</div>
+    </div>
+    <div class="react-item filled">
+      <div class="letter">A</div>
+      <div class="label">Audience</div>
+      <div class="desc">Who will read or use this output</div>
+    </div>
+    <div class="react-item filled">
+      <div class="letter">C</div>
+      <div class="label">Context</div>
+      <div class="desc">Background, constraints, data to use</div>
+    </div>
+    <div class="react-item filled">
+      <div class="letter">T</div>
+      <div class="label">Task</div>
+      <div class="desc">The actual ask — unambiguous, single goal</div>
+    </div>
+  </div>
+</div>
+
+<!-- TECHNIQUES -->
+<div class="card">
+  <h2>🛠 10 Cross-Model Techniques</h2>
+  <div class="techniques">
+    <div class="tech-item"><div class="tech-num">3.1</div><div class="tech-name">Zero-Shot</div><div class="tech-desc">Clear tasks with no examples needed</div></div>
+    <div class="tech-item"><div class="tech-num">3.2</div><div class="tech-name">Few-Shot</div><div class="tech-desc">Pattern matching via 2–3 input→output examples</div></div>
+    <div class="tech-item"><div class="tech-num">3.3</div><div class="tech-name">Chain-of-Thought</div><div class="tech-desc">Force step-by-step reasoning before answer</div></div>
+    <div class="tech-item"><div class="tech-num">3.4</div><div class="tech-name">Role Anchoring</div><div class="tech-desc">Strong persona shapes tone, depth, style</div></div>
+    <div class="tech-item"><div class="tech-num">3.5</div><div class="tech-name">Constraint-First</div><div class="tech-desc">Rules before content — Gemini 3 pattern</div></div>
+    <div class="tech-item"><div class="tech-num">3.6</div><div class="tech-name">XML Tagging</div><div class="tech-desc">Separate instructions from data cleanly</div></div>
+    <div class="tech-item"><div class="tech-num">3.7</div><div class="tech-name">Self-Critique Loop</div><div class="tech-desc">Model checks own output before delivering</div></div>
+    <div class="tech-item"><div class="tech-num">3.8</div><div class="tech-name">Explicit Planning</div><div class="tech-desc">Decompose before executing complex tasks</div></div>
+    <div class="tech-item"><div class="tech-num">3.9</div><div class="tech-name">Context Anchoring</div><div class="tech-desc">Re-anchor role/goal in long conversations</div></div>
+    <div class="tech-item"><div class="tech-num">3.10</div><div class="tech-name">Output Scaffolding</div><div class="tech-desc">Pre-define structure — model fills it in</div></div>
+  </div>
+</div>
+
+<!-- MODEL COMPARISON -->
+<div class="card">
+  <h2>🤖 Cross-Model Quick Reference</h2>
+  <table class="model-table">
+    <thead><tr><th>Model</th><th>Key Strength</th><th>Best Technique</th></tr></thead>
+    <tbody>
+      <tr><td class="model-name">Claude</td><td>Nuanced reasoning, long context</td><td>XML tags, self-critique, persona anchoring</td></tr>
+      <tr><td class="model-name">GPT-4.1 / 5.5</td><td>Instruction following, structured output</td><td>Few-shot, output scaffolding, system messages</td></tr>
+      <tr><td class="model-name">Gemini 3</td><td>Planning, decomposition, multimodal</td><td>Explicit planning, constraint-first, XML tagging</td></tr>
+      <tr><td class="model-name">Grok</td><td>Real-time data, casual reasoning</td><td>Direct questions, context compression</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ANTI-PATTERNS -->
+<div class="card">
+  <h2>🚫 Anti-Patterns to Avoid</h2>
+  <div class="anti-list">
+    <div class="anti-item"><span class="anti-x">✗</span><span><strong>Vague quality words</strong> — "make it professional / good / better" → specify what "good" means</span></div>
+    <div class="anti-item"><span class="anti-x">✗</span><span><strong>Instruction at the end</strong> — role + constraints BEFORE data, question AFTER</span></div>
+    <div class="anti-item"><span class="anti-x">✗</span><span><strong>Over-asking</strong> — one prompt, one primary goal; split complex tasks</span></div>
+    <div class="anti-item"><span class="anti-x">✗</span><span><strong>No format spec</strong> — always state expected output structure</span></div>
+    <div class="anti-item"><span class="anti-x">✗</span><span><strong>Assuming context</strong> — state your role and situation explicitly</span></div>
+    <div class="anti-item"><span class="anti-x">✗</span><span><strong>"Be creative"</strong> without guardrails — creativity without direction = inconsistent output</span></div>
+    <div class="anti-item"><span class="anti-x">✗</span><span><strong>Conversational drift</strong> — re-anchor role and goal every 5–6 turns in long chats</span></div>
+  </div>
+</div>
+
+<!-- DOMAIN TEMPLATES -->
+<div class="card">
+  <h2>📋 Domain Templates Available</h2>
+  <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.5rem;">
+    <span class="tag">Business / Program Management</span>
+    <span class="tag">Technical / Coding / Automation</span>
+    <span class="tag">Content / LinkedIn</span>
+    <span class="tag">Analysis / Research / Stock</span>
+    <span class="tag">Cricket Coaching / Fitness</span>
+  </div>
+</div>
+
+<div class="footer">
+  master-prompter v1.0 · part of <a href="https://github.com/bhrpraju/claude-skills" style="color:var(--accent2);">github.com/bhrpraju/claude-skills</a><br>
+  Sources: Google Gemini API · Phil Schmid Gemini 3 Guide · Anthropic Claude Docs · OpenAI GPT-4.1 Cookbook<br><br>
+  <em>Author: Rajendra Prasad Raju. Bh</em>
+</div>
+
+</body>
+</html>
