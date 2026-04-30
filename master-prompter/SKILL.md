@@ -6,13 +6,24 @@ description: >
   (2) The user explicitly asks to "improve", "rewrite", "fix", or "engineer" a prompt;
   (3) The user asks how to prompt Claude, ChatGPT, Gemini, or any AI model;
   (4) The user says something like "help me write a prompt", "make this better", "I'm not getting good results", "what's the best way to ask this";
-  (5) Output quality seems at risk due to missing role, goal, format, or audience specification.
+  (5) Output quality seems at risk due to missing role, goal, format, or audience specification;
+  (6) The user asks for a LinkedIn post, email draft, or any copy-paste content — ALWAYS apply the relevant domain template and wrap the final output in a code block.
   This skill makes Claude auto-reconstruct vague inputs into high-quality structured prompts AND teaches the user how to craft better prompts themselves. Never skip this skill when prompts are ambiguous or incomplete.
 ---
 
 # Master Prompter — Universal Prompt Engineering Skill
 
 This skill synthesizes best practices from **Claude (Anthropic)**, **GPT-4.1 / GPT-5.5 (OpenAI)**, **Gemini 3 (Google)**, and **Grok (xAI)** into a single unified framework.
+
+---
+
+## CRITICAL OUTPUT RULES (apply to every response)
+
+1. **LinkedIn posts** — ALWAYS wrap the final post in a code block so it can be copied in one click. No exceptions.
+2. **Emails** — ALWAYS wrap the final email body in a code block.
+3. **Prompts** — ALWAYS wrap engineered prompts in a code block.
+4. **Any copy-paste content** — if the user will paste it somewhere else, it goes in a code block.
+5. **LinkedIn requests** — ALWAYS apply the Content/LinkedIn template from Part 4, even if the prompt seems clear. Never write a LinkedIn post without running it through the template first.
 
 ---
 
@@ -27,6 +38,13 @@ If a user's message is missing **2 or more** of the 5 REACT components (Role, Ex
 - No success criteria ("make this better")
 - Domain ambiguity ("help me with my project")
 - No output length or structure specified
+
+**Domain auto-triggers (always apply the matching template, even for clear prompts):**
+- "write a LinkedIn post / tweet / social post" → apply Content/LinkedIn template
+- "write an email" → apply Business/Email template
+- "write a drill / session plan" → apply Cricket Coaching template
+- "analyze this stock / company" → apply Analysis/Research template
+- "write code / fix this script" → apply Technical/Coding template
 
 **When vague:** Do not ask a list of clarifying questions. Instead, state your reconstructed prompt and proceed. Flag any assumptions you made.
 
@@ -204,17 +222,40 @@ Context:
 ```
 
 ### Content / LinkedIn / Communication
+
+**MANDATORY for every LinkedIn post request — apply all rules below without exception:**
+
 ```
-You are a professional content strategist writing for a senior IT leader's personal brand.
+Role: You are a professional content strategist writing for a senior IT leader's
+personal brand on LinkedIn.
 
-Audience: IT professionals, AVPs, CXOs on LinkedIn
-Voice: Direct, senior, minimal fluff. Short sentences. Data over adjectives.
-Format: [Post / carousel / hook + body + CTA]
-Length: Max [X] words
+Audience: IT professionals, AVPs, CXOs, program managers on LinkedIn.
 
-Topic: [Subject here]
+Voice rules:
+- Short punchy sentences. No sentence over 20 words.
+- Data and specifics over adjectives ("196% revenue growth" not "impressive results")
+- Escalation phrasing — build tension before the payoff
+- Contrast pivots — "X used to require Y. Now it takes one prompt."
+- First-person, experience-backed — write as if the author lived this
+- 70% insight / 30% story ratio
 
-Do NOT use: corporate jargon, "leverage", "synergy", "game-changer", generic motivational phrases
+Format:
+- Hook: 1 punchy line (stops the scroll)
+- Body: 3–5 short paragraphs, each 2–4 sentences max
+- CTA: 1 line — question or invitation, not a command
+- Hashtags: max 5, relevant only — no hashtag spam
+
+Length: Max 280 words / 3,000 characters
+
+Hard bans — NEVER use:
+- "In today's fast-paced world"
+- "leverage", "synergy", "game-changer", "rockstar", "guru"
+- Generic motivational conclusions ("Keep pushing!", "The future is bright")
+- Passive voice openings
+- More than 5 hashtags
+- Tagging companies or clients by name
+
+OUTPUT RULE: Wrap the final LinkedIn post in a code block for easy copying.
 ```
 
 ### Analysis / Research / Stock
@@ -263,7 +304,7 @@ When Claude detects a vague prompt, follow this process:
 Check for each REACT component. Note which are absent.
 
 ### Step 2: Apply intelligent defaults
-Use context from the conversation history and known user profile to fill gaps.
+Use context from the conversation history and any available user profile to fill gaps. Apply sensible defaults based on the domain of the request — professional/formal for business tasks, technical for coding tasks, casual for creative tasks.
 
 ### Step 3: Reconstruct and announce
 Say: *"Your prompt was broad, so I've reconstructed it with these additions: [list assumptions]. Here's what I'm working with:"*
@@ -287,6 +328,7 @@ Before finalizing any prompted output, verify:
 - [ ] Constraints are front-loaded, not buried
 - [ ] No open-ended instructions ("make it good", "be creative")
 - [ ] Success criteria are clear — what does "done" look like?
+- [ ] Copy-paste outputs (LinkedIn, email, prompts) are wrapped in a code block
 
 ---
 
@@ -312,6 +354,7 @@ Never do these — they consistently degrade output quality:
 5. **Assuming context** — if the model doesn't know your role or situation, state it
 6. **"Be creative"** without guardrails — creativity without direction = inconsistent output
 7. **Conversational drift** — in long chats, re-anchor role and goal every 5–6 turns
+8. **Raw copy-paste output** — LinkedIn posts, emails, and prompts must always be in a code block
 
 ---
 
@@ -323,21 +366,17 @@ When a user says "improve this prompt", apply this transform:
 
 **Output (engineered):**
 ```
-You are writing for a senior IT leader with 30+ years of experience,
-building their personal brand on LinkedIn.
-
-Audience: IT professionals, CXOs, program managers
-Tone: Direct, no hype, experience-backed
-Format: Hook (1 line) → 3–4 short paragraphs → CTA (1 line)
-Length: Max 180 words
-
+Role: Senior IT leader, 30+ years experience, personal brand on LinkedIn.
+Audience: IT professionals, CXOs, program managers.
+Tone: Direct, no hype, experience-backed. Short sentences.
+Format: Hook → 3-4 paragraphs → CTA. Max 250 words.
 Topic: How AI automation is changing program management workflows —
 with a specific real-world example, not generic observations.
-
 Do NOT use: "In today's fast-paced world", "leverage", "game-changer",
 hashtag spam, or generic motivational conclusions.
+OUTPUT: Wrap final post in a code block.
 ```
 
 ---
 
-*Skill synthesized from: Google Gemini API Prompting Strategies, Gemini for Workspace October 2024 Guide, Phil Schmid's Gemini 3 Best Practices, Anthropic Claude Prompt Engineering Overview, OpenAI GPT-4.1 Prompting Guide, OpenAI GPT-5.5 Prompt Guidance, and cross-model community research.*
+*Skill v1.1 — synthesized from: Google Gemini API Prompting Strategies, Gemini for Workspace October 2024 Guide, Phil Schmid's Gemini 3 Best Practices, Anthropic Claude Prompt Engineering Overview, OpenAI GPT-4.1 Prompting Guide, OpenAI GPT-5.5 Prompt Guidance, and cross-model community research.*
